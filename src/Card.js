@@ -8,10 +8,10 @@ const Card = (props) =>{
 
     return (
     <div className='bg-light-green dib br3 pa3 ma2 grow bw2 shadow-5'>
-        <img src={require('./images/JuliasNeedleDesigns/'+image)} alt='hat' />
+        <img src={require(`./images/JuliasNeedleDesigns/${image}`)} alt='hat' />
         <div>
-            <div>designer: {designer}</div>
-            <div>Embroidery Zip file: {zipFile+'.zip'}</div>
+            <div>Designer: {designer}</div>
+            <div>Embroidery Zip file: {`${zipFile}.zip`}</div>
             <div>Hoop Size: {hoopSize.join(',')}</div>
             <div>Tags: {metaTags.join(',')}</div>
         </div>
