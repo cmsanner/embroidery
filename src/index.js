@@ -1,12 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import Card from './Card.js';
+// import Card from './Card.js';
+import CardList from './CardList';
 import * as serviceWorker from './serviceWorker';
+import 'tachyons';
 import {embroideryInfo} from './embroiderdata';
 
-ReactDOM.render(<div><Card data={embroideryInfo[0]} /> <Card data={embroideryInfo[1]} /> <Card data={embroideryInfo[2]} /> </div>,  document.getElementById('root')
-);
+ReactDOM.render(<CardList dataArray={embroideryInfo}/>,  document.getElementById('root')
+)
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
