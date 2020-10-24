@@ -1,9 +1,14 @@
 import React from 'react';
 
-const SearchBox =() => {
+//pass searchChange function from parent, 
+//use onChange() event to call searchChange
+const SearchBox =({searchChange}) => {
     return(
-        <div >
-            <input className='pa2 ba b--green bg-lightest-blue' type='search' placeholder='search' />
+        <div className='di'>
+            <input className='pa2 ba b--green bg-lightest-blue' 
+                type='search' 
+                placeholder='search' 
+                onChange={searchChange}/>
         </div>
     )
 }

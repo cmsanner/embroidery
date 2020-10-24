@@ -21,7 +21,7 @@ function CardList({dataArray}){
     // }
     
     return (
-        <div>{cardArray} </div>
+        <div className=''>{cardArray} </div>
     )
 }
 

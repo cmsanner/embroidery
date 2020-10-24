@@ -1,0 +1,206 @@
+-- Table: public.login
+
+-- DROP TABLE public.login;
+
+/*****************************************************************************************
+	tables below contain the information that will create the checkboxes
+	name must be unique 
+	short_name must be a single word that describes the name
+	the short_name will be used by REACT as an object key so it must be a single word
+******************************************************************************************/
+/* all embroidery files are PES so no need to create a table for embroidery type*/
+
+/* Christmas, Easter, Birthday etc*/
+CREATE TABLE holiday(
+	id serial PRIMARY KEY,
+	name VARCHAR (50) UNIQUE NOT NULL,
+	short_name VARCHAR (50) UNIQUE NOT NULL
+)
+
+/*continuous line, pocket peekers, coaster, mug rug, etc*/
+CREATE TABLE sewingstyle(
+	id serial PRIMARY KEY,
+	name VARCHAR (50) UNIQUE NOT NULL,
+	short_name VARCHAR (50) UNIQUE NOT NULL
+)
+
+/* car, animal, flower, farm, bird, hobby, etc*/
+CREATE TABLE theme(
+	id serial PRIMARY KEY,
+	name VARCHAR (50) UNIQUE NOT NULL,
+	short_name VARCHAR (50) UNIQUE NOT NULL
+)
+
+/*4x4, 5x7, 6x10*/
+CREATE TABLE hoopsize(
+	id serial PRIMARY KEY,
+	name VARCHAR (50) UNIQUE NOT NULL,
+	short_name VARCHAR (50) UNIQUE NOT NULL
+)
+
+/*summer, winter, spring, fall */
+CREATE TABLE season(
+	id serial PRIMARY KEY,
+	name VARCHAR (50) UNIQUE NOT NULL,
+	short_name VARCHAR (50) UNIQUE NOT NULL
+)
+
+/*julias needle designs, bunny cup, etc */
+CREATE TABLE designer(
+	id serial PRIMARY KEY,
+	name VARCHAR (50) UNIQUE NOT NULL,
+	short_name VARCHAR (50) UNIQUE NOT NULL
+)
+
+/*************************************************
+ embroideryInfo table contains information about 
+ each embroidery file. Image must exist, use a 
+ default image if you don't have one
+ ************************************************/
+CREATE TABLE embroideryInfo(
+	id 			serial PRIMARY KEY,
+	name 		VARCHAR (50) NOT NULL,
+	metatags 	VARCHAR (150),
+	image 		VARCHAR (50) NOT NULL,
+	collectionName VARCHAR (50),
+	single		BOOLEAN DEFAULT 't'
+	alphabet	BOOLEAN DEFAULT 'f'
+	zipfile		VARCHAR (50) NOT NULL,
+	designerID 	INT NOT NULL,
+	holidayID  	INT,
+	seasonID	INT,
+	styleID		INT,
+	themeID		INT NOT NULL,
+) 
+ 
+ 
+ /****************************************
+  embroidery files can have multiple sizes
+  this table will contain an entry for each 
+  size an embroider file can have
+  example 
+	- embroidery with ID 123, 4x4 = hoopsizeID 1
+	- embroidery with ID 123, 5x7 = hoopsizeID 2
+	- embroidery with ID 123, 6x10 = hoopsizeID 3
+	- would have three entries in the table 
+  embroideryID: 123 & hoopsizeID: 1
+  embroideryID: 123 & hoopsizeID: 2
+  embroideryID: 123 & hoopsizeID: 3
+  
+ *****************************************/
+ CREATE TABLE emb_sizes (
+  embroideryID INT NOT NULL,
+  hoopsizeID INT NOT NULL,
+  grant_date TIMESTAMP,
+  PRIMARY KEY (embroideryID, hoopsizeID),
+  FOREIGN KEY (hoopsizeID)
+      REFERENCES hoopsize (id),
+  FOREIGN KEY (embroideryID)
+      REFERENCES embroideryInfo (id)
+);
+ 
+ /* -------------------    Insert Statements ----------------------- */
+ insert into holiday (name, short_name)
+ values
+	('birthday','birthday'),
+	('christmas','christmas'),
+	('cinco de mayo','cinco'),
+	('easter','easter'),
+	('fathers day','fathers'),
+	('4th of july','fourth'),
+	('halloween','halloween'),
+	('memorial day','memorial'),
+	('st patricks','patricks'),
+	('new years','newyears'),
+	('mothers day','mothers'),
+	('thanksgiving','thanksgiving'),
+	('valentines','valentines')
+
+ insert into sewingstyle (name, short_name)
+ values
+	('continuous line','cl'),
+	('pocket peeker','pp'),
+	('mask','m'),
+	('coaster','c'),
+	('mug rug','mr'),
+	('applique','a'),
+	('boarder','b'),
+	('block','blk')
+
+	
+ insert into theme (name, short_name)
+ values
+	('animal','animal'),
+	('baby and children','baby'),
+	('bird','bird'),
+	('day of week','dow'),
+	('farm','farm'),
+	('flower','flower'),
+	('hat','hat'),
+	('hobby','hobby'),
+	('home','home'),
+	('inspiration','inspiration'),
+	('kitchen','kitchen'),
+	('month of year','moy'),
+	('phrase and word','phrase'),
+	('quilt block','block'),
+	('tool','tool'),
+	('monster','monster'),
+	('sea','sea'),
+	('space','space'),
+	('transportation','transportation'),
+	
+
+insert into hoopsize (name, short_name)
+ values
+	('4x4','4x4'),
+	('5x7','5x7'),
+	('6x10','6x10')
+ 
+ insert into season (name, short_name)
+ values
+	('spring','spring'),
+	('summer','summer'),
+	('fall','fall'),
+	('winter','winter')
+ 
+  insert into designer (name, short_name)
+ values
+	('applique and embroidery originals','aeo'),
+	('brother free designs','brother'),
+	('bunnycup','bunnycup'),
+	('buzztools','buzztools'),
+	('embroider this','et'),
+	('embroideres','embroideres'),
+	('embroidery gallery','eg'),
+	('embroidery online','eo'),
+	('fun stitch','fs'),
+	('julias needle designs','jnd'),
+	('julie hall','jh'),
+	('kimber bell','kb'),
+	('kreative kiwi','kiwi'),
+	('martha pullen','mp'),
+	('oregon patch works','opw'),
+	('planet applique','pa'),
+	('royal present','rp'),
+	('sew daily','sd'),
+	('sew terific','st'),
+	('smart needle','sn'),
+	
+/-------------------------  add items -----------------/
+insert into embroideryInfo (name, metatags, image, collectionName, single, alphabet, zipfile, designerID, holidayID, seasonID, styleID, themeID) 
+select id from designer where name = '' as designerID
+select id from holiday where name = '' as holidayId 
+ 
+	name 		VARCHAR (50) NOT NULL,
+	metatags 	VARCHAR (150),
+	image 		VARCHAR (50) NOT NULL,
+	collectionName VARCHAR (50),
+	single		BOOLEAN DEFAULT 't'
+	alphabet	BOOLEAN DEFAULT 'f'
+	zipfile		VARCHAR (50) NOT NULL,
+	designerID 	INT NOT NULL,
+	holidayID  	INT,
+	seasonID	INT,
+	styleID		INT,
+	themeID		INT NOT NULL,
