@@ -1,5 +1,5 @@
 import React from 'react';
-import Card from './Card';
+import Card from '../Card/Card';
 
 //1) code below can either be run as arrow function or an actual function
 //2) again code is interchangable, run as arrow function using map or a javascript loop

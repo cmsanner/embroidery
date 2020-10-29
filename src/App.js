@@ -1,15 +1,18 @@
 import React, {Component} from 'react';
-import CardList from './CardList';
-import SearchBox from './SearchBox';
+import FilterData from './components/FilterData/FilterData';
+import CardList from './components/CardList/CardList';
 import {embroideryInfo} from './embroiderdata';
 import Hoopsizes from './Hoopsizes';
 import CheckboxesSeason from './CheckboxesSeason';
 import HolidayData from './HolidayData';
 import ThemeData from './ThemeData';
 import StyleData from './StyleData';
-import Checkbox from './Checkbox';
-import Radio from './Radio';
+
 import './App.css';
+
+//for database: mssql, dao, axios, 
+//https://expressjs.com/en/guide/database-integration.html
+//express, pg-promise
 
 // let checkboxArray = [Hoopsizes,CheckboxesSeason ] ;
 const allHoops = Hoopsizes.map(item => (item.name )) //["4x4", "5x7", "6x10"]
@@ -24,6 +27,7 @@ class App extends Component {
         super();
         this.state ={
             dataArray: embroideryInfo,
+            dataHolidays: [],
             searchField: '' ,
             zipSearchField: '',
             checkedItems: new Map(),
@@ -32,11 +36,16 @@ class App extends Component {
     }
    
     componentDidMount(){
-   
-      // // eventually pull data from the database
-      // fetch('URL here')
-      //   .then(response => response.json())
-      //   .then(embroideryInfo => this.setState({dataArray: embroideryInfo}));
+       // eventually pull data from the database
+       // for testing purposes make sure I can connect to the 
+       // backend - woot woot this works!
+       /*
+       fetch('http://localhost:3000/holiday')
+         .then(response => response.json())
+         .then(data => this.setState({dataHolidays: data}))
+        */
+          // .then(data => console.log(data))
+         //.then(embroideryInfo => this.setState({dataArray: embroideryInfo}));
     }
 
     toggleCheckboxChange  = (event) =>  {
@@ -97,7 +106,9 @@ class App extends Component {
     // https://womenwho.design/  look for more inspiration for design  https://tachyons.io/gallery/
 
     render(){
-      
+      // I decide when I itterate through each item, to check to see if it met all the 
+      // search criteria. Therefore, I'm not itterating through the dataset multiple times
+      //  
       //  console.log('#39 which: ',this.state.checkedItems.size)
       // console.log('spread array: ',[...this.state.checkedItems]);
       // console.log('spread: ',...this.state.checkedItems);
@@ -139,7 +150,7 @@ class App extends Component {
        
         const filteredCatalog = this.state.dataArray.filter(eachItem => {
             let isSingle = '';
-            // let zipName='';
+
             if(this.state.selectedOption !== 'all'){
               this.state.selectedOption === 'collections'? isSingle = false: isSingle = true;
             }
@@ -162,90 +173,14 @@ class App extends Component {
 // console.log('this.state.checkedItems: ',this.state.checkedItems);
 // console.log('this.state.checkedItems: ',this.state.checkedItems);
 // console.log('theme',checkTheme )
-   
         
         return(
             <div className='flex'>
-              <div className='index-module--sidebar--1AQzo  ml1'>
-                <h1>Embroidery Catalog</h1>
-                <div className='dib'><div className='di' >Search Tags: </div><SearchBox searchChange={this.onSearchChange}/></div>
-                <div className='dib'><div className='di' >Search zip file name: </div><SearchBox searchChange={this.onZipSearchChange}/></div>
-                <div className=''> <fieldset className='ba b--black-20'><legend >View Options</legend>
-                  {
-                   viewOptions.map( (item, index) => {
-                      return (
-                        <Radio  key={item} type='radio' className='mr2' name={item} radioName='view-options' onChange={this.handleOptionChange } checked={this.state.selectedOption === item.toLowerCase()}/>
-                          )
-                   } ) 
-                  }
-                  {/* be able to search by zip file name 
-                  https://medium.com/@reneecruz/search-bar-in-react-js-in-six-simple-steps-4849118b2134
-                  https://dev.to/sage911/how-to-write-a-search-component-with-suggestions-in-react-d20
-                  */}
-                 {/* <input type='text' placeholder='enter zip file name here'></input>*/} 
-                  </fieldset>
-                </div>
-
-                <div className='db'>
-                <fieldset className='ba b--black-20'><legend >Hoop Sizes</legend>
-                <span className='ttu f6 index-module--main--Z8889 index-module--mainRow--3cI-7'>
-                  {
-                    // <label>4x4<input class="mr2" type="checkbox" name="4x4"></label>
-                    Hoopsizes.map(item => (
-                      <div key={item.key} >
-                        <Checkbox name={item.name} shortName={item.key} checked={this.state.checkedItems.get(item.name)} onChange={this.toggleCheckboxChange } />
-                      </div>
-                    ))
-                  }
-                  </span>
-                  </fieldset>
-                  <fieldset className='ba b--black-20'><legend>Seasons</legend>
-                  <span className='ttu f6 index-module--main--Z8889 index-module--mainRow--3cI-7'>
-                  {
-                    CheckboxesSeason.map(item => (
-                      <div key={item.key} >
-                        <Checkbox name={item.name} shortName={item.key} checked={this.state.checkedItems.get(item.name)} onChange={this.toggleCheckboxChange } />
-                    </div>
-                    ))
-                  }
-                  </span>
-                  </fieldset>
-                  <fieldset className='ba b--black-20'><legend>Sewing Style</legend>
-                  <span className='ttu f6 index-module--main--Z8889 index-module--mainRow--3cI-7'>
-                  {
-                    StyleData.map(item => (
-                      <div key={item.key} >
-                        <Checkbox name={item.name} shortName={item.key} checked={this.state.checkedItems.get(item.name)} onChange={this.toggleCheckboxChange } />
-                    </div>
-                    ))
-                  }
-                  </span>
-                  </fieldset>
-                  <fieldset className='ba b--black-20'><legend>Themes</legend>
-                  <span className='ttu f6 index-module--main--Z8889 index-module--mainRow--3cI-7'>
-                  {
-                    ThemeData.map(item => (
-                      <div key={item.key} >
-                        <Checkbox name={item.name}  shortName={item.key} checked={this.state.checkedItems.get(item.name)} onChange={this.toggleCheckboxChange } />
-                    </div>
-                    ))
-                  }
-                  </span>
-                  </fieldset>
-                  <fieldset className='ba b--black-20'><legend >Holidays</legend>
-                <span className='ttu f6 index-module--main--Z8889 index-module--mainRow--3cI-7'>
-                  {
-                    HolidayData.map(item => (
-                      <div key={item.key} >
-                        <Checkbox name={item.name}  shortName={item.key} checked={this.state.checkedItems.get(item.name)} onChange={this.toggleCheckboxChange } />
-                      </div>
-                    ))
-                  }
-                  </span>
-                  </fieldset>
-                  </div>
-              </div>
-
+              <FilterData  searchChange={this.onZipSearchChange} searchChange1={this.onSearchChange} 
+                  viewOptions={viewOptions} handleOptionChange={this.handleOptionChange} selectedOption={this.state.selectedOption}
+                  Hoopsizes={Hoopsizes} checkedItems={this.state.checkedItems} toggleCheckboxChange={this.toggleCheckboxChange}
+                  CheckboxesSeason={CheckboxesSeason} StyleData={StyleData} ThemeData={ThemeData} HolidayData={HolidayData}
+               />
                 <div className='w-100'>
                 <CardList dataArray={filteredCatalog}/>
                 </div>
