@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import FilterData from './components/FilterData/FilterData';
 import CardList from './components/CardList/CardList';
+import Navigation from './components/Navigation/Navigation';
+import HolidayUpdateForm from './components/HolidayUpdateForm/HolidayUpdateForm';
 import {embroideryInfo} from './embroiderdata';
 import Hoopsizes from './Hoopsizes';
 import CheckboxesSeason from './CheckboxesSeason';
@@ -9,10 +11,13 @@ import ThemeData from './ThemeData';
 import StyleData from './StyleData';
 
 import './App.css';
+import TableNavigation from './components/TableNavigation/TableNavigation';
 
 //for database: mssql, dao, axios, 
 //https://expressjs.com/en/guide/database-integration.html
 //express, pg-promise
+
+//check this out https://github.com/marmelab/react-admin, https://marmelab.com/react-admin/Tutorial.html
 
 // let checkboxArray = [Hoopsizes,CheckboxesSeason ] ;
 const allHoops = Hoopsizes.map(item => (item.name )) //["4x4", "5x7", "6x10"]
@@ -31,7 +36,9 @@ class App extends Component {
             searchField: '' ,
             zipSearchField: '',
             checkedItems: new Map(),
-            selectedOption: 'all'
+            selectedOption: 'all',
+            route: 'home',
+            tableRoute: 'holiday'
         }
     }
    
@@ -52,7 +59,7 @@ class App extends Component {
         const item = event.target.name;
         const isChecked = event.target.checked;
         this.setState(prevState => ({ checkedItems: prevState.checkedItems.set(item, isChecked) }));
-        }
+    }
 
     //Note: when creating your own methods, use arrow functions to make sure 'this' refers to the App  
     onSearchChange = (event) => {
@@ -92,6 +99,7 @@ class App extends Component {
         return checkedArray.indexOf(v) >= 0;
       }); 
     }
+
     isItemFound = (checkedArray, arr) => {
       if(checkedArray.length === 0 ){
         return true;
@@ -102,8 +110,44 @@ class App extends Component {
       return checkedArray.toString().includes(arr); 
     }
 
+    onRouteChange = (route) => {
+      this.setState({route: route});
+    }
+
+    onTableRouteChange = (tableRoute) => {
+      //console.log('table route: ', tableRoute);
+      this.setState({tableRoute: tableRoute})
+    }
+
+    renderRouteSwitch(param){
+      switch(this.state.tableRoute){
+        case 'hoopsize':  
+          return <HolidayUpdateForm data={Hoopsizes} tableName={'Hoopsize'} />
+        
+          case 'season' : 
+            return <HolidayUpdateForm data={CheckboxesSeason} tableName={'Seasons'} />
+   
+        case 'style' : 
+            return  <HolidayUpdateForm data={StyleData} tableName={'Style'}/>
+            
+        case 'theme' : 
+            return  <HolidayUpdateForm data={ThemeData} tableName={'Theme'}/>
+
+        case 'holiday' : 
+            return  <HolidayUpdateForm data={HolidayData} tableName={'Holiday'}/>
+    
+        case 'embroidery' : 
+            return  <HolidayUpdateForm data={this.state.dataArray} tableName={'Embroidery'}/>
+       
+        default:  
+            return <div>{'Choose a table to update'}</div>
+      }
+    }
+
     // http://react.tips/checkboxes-in-react-16/   rewrite checkboxes
     // https://womenwho.design/  look for more inspiration for design  https://tachyons.io/gallery/
+
+
 
     render(){
       // I decide when I itterate through each item, to check to see if it met all the 
@@ -142,9 +186,9 @@ class App extends Component {
         }
         for(var m=0;m<allThemes.length;m++){
           if(this.state.checkedItems.get(allThemes[m]) !== 'undefined' && this.state.checkedItems.get(allThemes[m])){
-            console.log('add theme to checkTheme array ', allThemes[m]);
+            // console.log('add theme to checkTheme array ', allThemes[m]);
             checkTheme[checkTheme.length] =allThemes[m].toLowerCase() ;
-            console.log('checkTheme array: ',  checkTheme);
+            // console.log('checkTheme array: ',  checkTheme);
           }
         }
        
@@ -156,7 +200,7 @@ class App extends Component {
             }
 
             return eachItem.metaTags.includes(this.state.searchField) && 
-                eachItem.zipFile.toLocaleLowerCase().includes(this.state.zipSearchField.toLowerCase()) &&
+                eachItem.zipFile.toLocaleLowerCase().includes(this.state.zipSearchField) &&
                 (this.isFound(checkedHoopSizes, eachItem.hoopSize)) &&
                 (this.isItemFound(checkedSeasons, eachItem.season.toLowerCase())) &&
                 (this.isItemFound(checkedHoliday, eachItem.holiday.toLowerCase())) &&
@@ -175,16 +219,26 @@ class App extends Component {
 // console.log('theme',checkTheme )
         
         return(
-            <div className='flex'>
-              <FilterData  searchChange={this.onZipSearchChange} searchChange1={this.onSearchChange} 
-                  viewOptions={viewOptions} handleOptionChange={this.handleOptionChange} selectedOption={this.state.selectedOption}
-                  Hoopsizes={Hoopsizes} checkedItems={this.state.checkedItems} toggleCheckboxChange={this.toggleCheckboxChange}
-                  CheckboxesSeason={CheckboxesSeason} StyleData={StyleData} ThemeData={ThemeData} HolidayData={HolidayData}
-               />
-                <div className='w-100'>
-                <CardList dataArray={filteredCatalog}/>
+           <div>
+              <Navigation onRouteChange={this.onRouteChange}/>
+              { this.state.route === 'home'
+              ?   <div className='flex pa5-ns bt b--black-10 black-70 bg-white'>
+                    <FilterData   searchTagChange={this.onSearchChange} searchZipChange={this.onZipSearchChange}
+                      viewOptions={viewOptions} handleOptionChange={this.handleOptionChange} selectedOption={this.state.selectedOption}
+                      Hoopsizes={Hoopsizes} checkedItems={this.state.checkedItems} toggleCheckboxChange={this.toggleCheckboxChange}
+                      CheckboxesSeason={CheckboxesSeason} StyleData={StyleData} ThemeData={ThemeData} HolidayData={HolidayData}
+                    />
+                    <div className='w-100'>
+                      <CardList dataArray={filteredCatalog}/>
+                    </div>
+                  </div>  
+              : <div className='flex pa5-ns bt b--black-10 black-70 bg-white'> 
+                  <TableNavigation onTableRouteChange={this.onTableRouteChange}/>
+                  {this.renderRouteSwitch(this.state.route)}
+                  
                 </div>
-            </div>
+              }
+          </div>
         )
     }
     
