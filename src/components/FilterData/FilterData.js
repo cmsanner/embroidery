@@ -4,18 +4,18 @@ import Radio from '../Radio/Radio'
 import Checkbox from '../Checkbox/Checkbox';
 
 
-const Navigation = ({searchChange, searchChange1, viewOptions, handleOptionChange, selectedOption, Hoopsizes, 
+const Navigation = ({searchTagChange, searchZipChange, viewOptions, handleOptionChange, selectedOption, Hoopsizes, 
     checkedItems, toggleCheckboxChange, CheckboxesSeason, StyleData, ThemeData, HolidayData }) => {
     return (
-            <nav>
-                <div className='index-module--sidebar--1AQzo  ml1'>
+          
+            <div className='index-module--sidebar--1AQzo  ml1'>
                 <h1>Embroidery Catalog</h1>
                 {/* be able to search by zip file name 
                   https://medium.com/@reneecruz/search-bar-in-react-js-in-six-simple-steps-4849118b2134
                   https://dev.to/sage911/how-to-write-a-search-component-with-suggestions-in-react-d20
                   */}
-                <div className='dib'><div className='di' >Search Tags: </div><SearchBox searchChange={searchChange1}/></div>
-                <div className='dib'><div className='di' >Search zip file name: </div><SearchBox searchChange={searchChange}/></div> 
+                <div className='dib'><div className='di' >Search Tags: </div><SearchBox searchChange={searchTagChange}/></div>
+                <div className='dib'><div className='di' >Search zip file name: </div><SearchBox searchChange={searchZipChange}/></div> 
                 <div className=''> <fieldset className='ba b--black-20'><legend >View Options</legend>
                   {
                    viewOptions.map( (item, index) => {
@@ -84,8 +84,8 @@ const Navigation = ({searchChange, searchChange1, viewOptions, handleOptionChang
                       </span>
                   </fieldset>
                 </div>
-                </div>
-            </nav>
+                
+            </div>
 
         )
 }
